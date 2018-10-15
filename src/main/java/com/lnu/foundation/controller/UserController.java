@@ -1,58 +1,59 @@
 package com.lnu.foundation.controller;
 
-import com.lnu.foundation.model.Car;
-import com.lnu.foundation.model.Data;
+import com.lnu.foundation.model.TestSession;
 import com.lnu.foundation.model.User;
-import com.lnu.foundation.repository.CarRepository;
+import com.lnu.foundation.provider.BaseProvider;
+import com.lnu.foundation.repository.RoleRepository;
+import com.lnu.foundation.repository.TestSessionRepository;
 import com.lnu.foundation.repository.UserRepository;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.google.api.Google;
+import org.springframework.social.linkedin.api.LinkedIn;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.lnu.foundation.repository.DataRepository.loadData;
 
 /**
  * Created by rucsac on 10/10/2018.
  */
 @RestController
 public class UserController {
+    @Autowired
     private UserRepository repository;
-    private CarRepository carRepository;
 
-    public UserController(CarRepository carRepository, UserRepository repository) {
-        this.carRepository = carRepository;
-        this.repository = repository;
-    }
+    @Autowired
+    BaseProvider socialLoginBean;
 
-    @GetMapping("/cool-cars")
-    @CrossOrigin(origins = "http://localhost:4200")
-    public Collection<Car> coolUsers() {
-        return carRepository.findAll().stream()
-                .filter(this::isCool)
+    @Autowired
+    TestSessionRepository testRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
+
+    @GetMapping("/physician/tests")
+    public Collection<TestSession> getPhysicianTests() {
+        ConnectionRepository connectionRepository = socialLoginBean.getConnectionRepository();
+        if (connectionRepository.findPrimaryConnection(Google.class) == null) {
+            return Collections.emptyList();
+        }
+        List<User> physician = repository.findByRole(roleRepository.findByName("physician"));
+        return testRepository.findByTest_Therapy_Med(physician.get(0)).stream()
                 .collect(Collectors.toList());
     }
 
-
-    @GetMapping("/get-users")
-    public Collection<User> users() {
-        return repository.findAll().stream()
+    @GetMapping("/researcher/tests")
+    public Collection<TestSession> getResearcherTests() {
+        ConnectionRepository connectionRepository = socialLoginBean.getConnectionRepository();
+        if (connectionRepository.findPrimaryConnection(LinkedIn.class) == null) {
+            return Collections.emptyList();
+        }
+        List<User> physician = repository.findByRole(roleRepository.findByName("researcher"));
+        return testRepository.findByTest_Therapy_Med(physician.get(0)).stream()
                 .collect(Collectors.toList());
-    }
-
-    @GetMapping("/get-data")
-    public Collection<Data> data() {
-        return loadData("data2").stream()
-                .collect(Collectors.toList());
-    }
-
-
-    private boolean isCool(Car car) {
-        return !car.getName().equals("AMC Gremlin") &&
-                !car.getName().equals("Triumph Stag") &&
-                !car.getName().equals("Ford Pinto") &&
-                !car.getName().equals("Yugo GV");
     }
 }

@@ -1,6 +1,6 @@
 package com.lnu.foundation.repository;
 
-import com.lnu.foundation.model.Car;
+import com.lnu.foundation.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -9,5 +9,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  */
 @RepositoryRestResource
 //@CrossOrigin(origins = "http://localhost:4200")
-public interface CarRepository extends JpaRepository<Car, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    Role findByName(String name);
 }

@@ -12,15 +12,16 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @EqualsAndHashCode
+@ToString
 public class TestSession {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long testSessionId;
   private long testType;
-  @OneToOne
+
+  @ManyToOne
   @JoinColumn(name = "test_id")
   private Test test;
   private String dataUrl;

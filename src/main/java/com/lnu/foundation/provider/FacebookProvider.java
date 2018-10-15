@@ -27,7 +27,7 @@ public class FacebookProvider {
         }
         populateUserDetailsFromFacebook(userForm);
         model.addAttribute("loggedInUser", userForm);
-        return "user";
+        return "patient";
     }
 
     protected void populateUserDetailsFromFacebook(UserBean userForm) {

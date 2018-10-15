@@ -1,12 +1,20 @@
 package com.lnu.foundation.provider;
 
+import com.lnu.foundation.model.Therapy;
+import com.lnu.foundation.model.User;
 import com.lnu.foundation.model.UserBean;
+import com.lnu.foundation.repository.RoleRepository;
+import com.lnu.foundation.repository.TestRepository;
+import com.lnu.foundation.repository.TherapyRepository;
+import com.lnu.foundation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.api.plus.Person;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+
+import java.util.List;
 
 @Service
 public class GoogleProvider {
@@ -17,6 +25,18 @@ public class GoogleProvider {
     @Autowired
     BaseProvider socialLoginBean;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    TherapyRepository therapyRepository;
+
+    @Autowired
+    TestRepository testRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
+
     public String getGoogleUserData(Model model, UserBean userForm) {
 
         ConnectionRepository connectionRepository = socialLoginBean.getConnectionRepository();
@@ -26,7 +46,11 @@ public class GoogleProvider {
 
         populateUserDetailsFromGoogle(userForm);
         model.addAttribute("loggedInUser", userForm);
-        return "user";
+        List<User> physician = userRepository.findByRole(roleRepository.findByName("physician"));
+        List<Therapy> therapies = therapyRepository.findByMed(physician.get(0));
+
+        model.addAttribute("therapies", therapies);
+        return "physician";
     }
 
 

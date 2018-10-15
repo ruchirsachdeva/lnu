@@ -1,7 +1,6 @@
-package com.lnu.foundation.provider;
+package com.lnu.foundation.service;
 
 import com.lnu.foundation.model.UserBean;
-import com.lnu.foundation.service.UserService;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;

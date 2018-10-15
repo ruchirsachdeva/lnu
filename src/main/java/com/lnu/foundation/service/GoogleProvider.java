@@ -1,7 +1,6 @@
-package com.lnu.foundation.provider;
+package com.lnu.foundation.service;
 
 import com.lnu.foundation.model.UserBean;
-import com.lnu.foundation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.google.api.Google;

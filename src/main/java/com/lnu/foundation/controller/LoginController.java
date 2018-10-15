@@ -2,9 +2,9 @@ package com.lnu.foundation.controller;
 
 
 import com.lnu.foundation.model.UserBean;
-import com.lnu.foundation.provider.FacebookProvider;
-import com.lnu.foundation.provider.GoogleProvider;
-import com.lnu.foundation.provider.LinkedInProvider;
+import com.lnu.foundation.service.FacebookProvider;
+import com.lnu.foundation.service.GoogleProvider;
+import com.lnu.foundation.service.LinkedInProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

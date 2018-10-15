@@ -1,4 +1,4 @@
-package com.lnu.foundation.provider;
+package com.lnu.foundation.service;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;

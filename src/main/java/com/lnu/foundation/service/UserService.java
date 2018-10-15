@@ -3,7 +3,6 @@ package com.lnu.foundation.service;
 import com.lnu.foundation.model.TestSession;
 import com.lnu.foundation.model.Therapy;
 import com.lnu.foundation.model.User;
-import com.lnu.foundation.provider.BaseProvider;
 import com.lnu.foundation.repository.RoleRepository;
 import com.lnu.foundation.repository.TestSessionRepository;
 import com.lnu.foundation.repository.TherapyRepository;

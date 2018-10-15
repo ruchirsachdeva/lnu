@@ -18,7 +18,7 @@ public class Organization {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long organizationID;
+  private Long organizationId;
   private String name;
 
 }

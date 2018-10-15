@@ -17,7 +17,7 @@ import javax.persistence.Id;
 public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long medicineID;
+    private Long medicineId;
     private String name;
 
 

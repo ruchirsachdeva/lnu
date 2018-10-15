@@ -15,15 +15,15 @@ public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long noteID;
+    private Long noteId;
     private String note;
     // private long testSessionIDtestSession;
     @ManyToOne
-    @JoinColumn(name = "test_session_idtest_session")
+    @JoinColumn(name = "test_session_id")
     private TestSession testSession;
     //private long userIDmed;
     @ManyToOne
-    @JoinColumn(name = "user_idmed")
+    @JoinColumn(name = "med_id")
     private User medUser;
 
 

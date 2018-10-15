@@ -21,7 +21,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `medicine` (
-  `medicineID` int(11) NOT NULL,
+  `medicine_id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -29,7 +29,7 @@ CREATE TABLE `medicine` (
 -- Dumping data for table `medicine`
 --
 
-INSERT INTO `medicine` (`medicineID`, `name`) VALUES
+INSERT INTO `medicine` (`medicine_id`, `name`) VALUES
   (1, 'Medicine 1'),
   (2, 'Medicine 2');
 
@@ -40,17 +40,17 @@ INSERT INTO `medicine` (`medicineID`, `name`) VALUES
 --
 
 CREATE TABLE `note` (
-  `noteID` int(11) NOT NULL,
-  `Test_Session_IDtest_session` int(11) NOT NULL,
+  `note_id` int(11) NOT NULL,
+  `test_session_id` int(11) NOT NULL,
   `note` longtext NOT NULL,
-  `User_IDmed` int(11) NOT NULL
+  `med_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `note`
 --
 
-INSERT INTO `note` (`noteID`, `Test_Session_IDtest_session`, `note`, `User_IDmed`) VALUES
+INSERT INTO `note` (`note_id`, `test_session_id`, `note`, `med_id`) VALUES
   (1, 1, 'Well this is interesting.', 2),
   (2, 1, 'This seams a bit weird.', 1);
 
@@ -61,7 +61,7 @@ INSERT INTO `note` (`noteID`, `Test_Session_IDtest_session`, `note`, `User_IDmed
 --
 
 CREATE TABLE `organization` (
-  `organizationID` int(11) NOT NULL,
+  `organization_id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -69,7 +69,7 @@ CREATE TABLE `organization` (
 -- Dumping data for table `organization`
 --
 
-INSERT INTO `organization` (`organizationID`, `name`) VALUES
+INSERT INTO `organization` (`organization_id`, `name`) VALUES
   (1, 'Hospital'),
   (2, 'LNU University');
 
@@ -80,7 +80,7 @@ INSERT INTO `organization` (`organizationID`, `name`) VALUES
 --
 
 CREATE TABLE `role` (
-  `roleID` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -89,7 +89,7 @@ CREATE TABLE `role` (
 -- Dumping data for table `role`
 --
 
-INSERT INTO `role` (`roleID`, `name`, `type`) VALUES
+INSERT INTO `role` (`role_id`, `name`, `type`) VALUES
   (1, 'patient', '1'),
   (2, 'physician', '2'),
   (3, 'researcher', '3'),
@@ -102,16 +102,16 @@ INSERT INTO `role` (`roleID`, `name`, `type`) VALUES
 --
 
 CREATE TABLE `test` (
-  `testID` int(11) NOT NULL,
-  `dateTime` datetime NOT NULL,
-  `Therapy_IDtherapy` int(11) NOT NULL
+  `test_id` int(11) NOT NULL,
+  `date_time` datetime NOT NULL,
+  `therapy_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test`
 --
 
-INSERT INTO `test` (`testID`, `dateTime`, `Therapy_IDtherapy`) VALUES
+INSERT INTO `test` (`test_id`, `date_time`, `therapy_id`) VALUES
   (1, '2009-12-01 18:00:00', 1),
   (2, '2009-12-02 18:00:00', 1),
   (3, '2009-12-02 18:00:00', 2);
@@ -123,17 +123,17 @@ INSERT INTO `test` (`testID`, `dateTime`, `Therapy_IDtherapy`) VALUES
 --
 
 CREATE TABLE `test_session` (
-  `test_SessionID` int(11) NOT NULL,
+  `test_session_id` int(11) NOT NULL,
   `test_type` int(11) NOT NULL,
-  `Test_IDtest` int(11) NOT NULL,
-  `DataURL` varchar(255) NOT NULL
+  `test_id` int(11) NOT NULL,
+  `data_url` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `test_session`
 --
 
-INSERT INTO `test_session` (`test_SessionID`, `test_type`, `Test_IDtest`, `DataURL`) VALUES
+INSERT INTO `test_session` (`test_session_id`, `test_type`, `test_id`, `data_url`) VALUES
   (1, 1, 1, 'data1'),
   (2, 2, 1, 'data2'),
   (3, 1, 2, 'data3'),
@@ -148,17 +148,17 @@ INSERT INTO `test_session` (`test_SessionID`, `test_type`, `Test_IDtest`, `DataU
 --
 
 CREATE TABLE `therapy` (
-  `therapyID` int(11) NOT NULL,
-  `User_IDpatient` int(11) NOT NULL,
-  `User_IDmed` int(11) NOT NULL,
-  `TherapyList_IDtherapylist` int(11) NOT NULL
+  `therapy_id` int(11) NOT NULL,
+  `patient_id` int(11) NOT NULL,
+  `med_id` int(11) NOT NULL,
+  `therapylist_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `therapy`
 --
 
-INSERT INTO `therapy` (`therapyID`, `User_IDpatient`, `User_IDmed`, `TherapyList_IDtherapylist`) VALUES
+INSERT INTO `therapy` (`therapy_id`, `patient_id`, `med_id`, `therapylist_id`) VALUES
   (1, 3, 1, 1),
   (2, 4, 1, 1);
 
@@ -169,17 +169,17 @@ INSERT INTO `therapy` (`therapyID`, `User_IDpatient`, `User_IDmed`, `TherapyList
 --
 
 CREATE TABLE `therapy_list` (
-  `therapy_listID` int(11) NOT NULL,
+  `therapy_list_id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `Medicine_IDmedicine` int(11) NOT NULL,
-  `Dosage` varchar(45) NOT NULL
+  `medicine_id` int(11) NOT NULL,
+  `dosage` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `therapy_list`
 --
 
-INSERT INTO `therapy_list` (`therapy_listID`, `name`, `Medicine_IDmedicine`, `Dosage`) VALUES
+INSERT INTO `therapy_list` (`therapy_list_id`, `name`, `medicine_id`, `dosage`) VALUES
   (1, 'Therapy trials with Medicine 1', 1, '400 ml');
 
 -- --------------------------------------------------------
@@ -189,20 +189,20 @@ INSERT INTO `therapy_list` (`therapy_listID`, `name`, `Medicine_IDmedicine`, `Do
 --
 
 CREATE TABLE `user` (
-  `userID` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `username` varchar(45) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `Role_IDrole` int(11) NOT NULL,
-  `organization` int(11) NOT NULL,
-  `Lat` float DEFAULT NULL,
-  `Long` float DEFAULT NULL
+  `role_id` int(11) NOT NULL,
+  `organization_id` int(11) NOT NULL,
+  `lat` float DEFAULT NULL,
+  `long` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `Car`
 --
 
-INSERT INTO `user` (`userID`, `username`, `email`, `Role_IDrole`, `organization`, `Lat`, `Long`) VALUES
+INSERT INTO `user` (`user_id`, `username`, `email`, `role_id`, `organization_id`, `lat`, `long`) VALUES
   (1, 'doc', 'doc@hospital.com', 2, 1, NULL, NULL),
   (2, 'researcher', 'res@uni.se', 3, 2, NULL, NULL),
   (3, 'patient1', 'x@gmail.com', 1, 1, 59.6567, 16.6709),
@@ -216,66 +216,66 @@ INSERT INTO `user` (`userID`, `username`, `email`, `Role_IDrole`, `organization`
 -- Indexes for table `medicine`
 --
 ALTER TABLE `medicine`
-  ADD PRIMARY KEY (`medicineID`);
+  ADD PRIMARY KEY (`medicine_id`);
 
 --
 -- Indexes for table `note`
 --
 ALTER TABLE `note`
-  ADD PRIMARY KEY (`noteID`),
-  ADD KEY `fk_Test_SessionID_idx` (`Test_Session_IDtest_session`),
-  ADD KEY `fk_UserID_idx` (`User_IDmed`);
+  ADD PRIMARY KEY (`note_id`),
+  ADD KEY `fk_Test_SessionID_idx` (`test_session_id`),
+  ADD KEY `fk_UserID_idx` (`med_id`);
 
 --
 -- Indexes for table `organization`
 --
 ALTER TABLE `organization`
-  ADD PRIMARY KEY (`organizationID`);
+  ADD PRIMARY KEY (`organization_id`);
 
 --
 -- Indexes for table `role`
 --
 ALTER TABLE `role`
-  ADD PRIMARY KEY (`roleID`);
+  ADD PRIMARY KEY (`role_id`);
 
 --
 -- Indexes for table `test`
 --
 ALTER TABLE `test`
-  ADD PRIMARY KEY (`testID`),
-  ADD KEY `fk_TherapyID_idx` (`Therapy_IDtherapy`);
+  ADD PRIMARY KEY (`test_id`),
+  ADD KEY `fk_TherapyID_idx` (`therapy_id`);
 
 --
 -- Indexes for table `test_session`
 --
 ALTER TABLE `test_session`
-  ADD PRIMARY KEY (`test_SessionID`),
-  ADD KEY `fk_TestID_idx` (`Test_IDtest`);
+  ADD PRIMARY KEY (`test_session_id`),
+  ADD KEY `fk_TestID_idx` (`test_id`);
 
 --
 -- Indexes for table `therapy`
 --
 ALTER TABLE `therapy`
-  ADD PRIMARY KEY (`therapyID`),
-  ADD KEY `fk_UserID_Patient_idx` (`User_IDpatient`),
-  ADD KEY `fk_UserID_medic_idx` (`User_IDmed`),
-  ADD KEY `fk_Therapy_ListID_idx` (`TherapyList_IDtherapylist`);
+  ADD PRIMARY KEY (`therapy_id`),
+  ADD KEY `fk_UserID_Patient_idx` (`patient_id`),
+  ADD KEY `fk_UserID_medic_idx` (`med_id`),
+  ADD KEY `fk_Therapy_ListID_idx` (`therapylist_id`);
 
 --
 -- Indexes for table `therapy_list`
 --
 ALTER TABLE `therapy_list`
-  ADD PRIMARY KEY (`therapy_listID`),
-  ADD KEY `fk_medicineID_idx` (`Medicine_IDmedicine`);
+  ADD PRIMARY KEY (`therapy_list_id`),
+  ADD KEY `fk_medicineID_idx` (`medicine_id`);
 
 --
 -- Indexes for table `Car`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`userID`),
+  ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `username_UNIQUE` (`username`),
-  ADD KEY `roleID_idx` (`Role_IDrole`),
-  ADD KEY `fk_User_Organization_idx` (`organization`);
+  ADD KEY `roleID_idx` (`role_id`),
+  ADD KEY `fk_User_Organization_idx` (`organization_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -285,55 +285,55 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `medicine`
 --
 ALTER TABLE `medicine`
-  MODIFY `medicineID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `medicine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `note`
 --
 ALTER TABLE `note`
-  MODIFY `noteID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `note_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `organization`
 --
 ALTER TABLE `organization`
-  MODIFY `organizationID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `organization_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `roleID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `test`
 --
 ALTER TABLE `test`
-  MODIFY `testID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `test_session`
 --
 ALTER TABLE `test_session`
-  MODIFY `test_SessionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `test_session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `therapy`
 --
 ALTER TABLE `therapy`
-  MODIFY `therapyID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `therapy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `therapy_list`
 --
 ALTER TABLE `therapy_list`
-  MODIFY `therapy_listID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `therapy_list_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `Car`
 --
 ALTER TABLE `user`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -343,38 +343,38 @@ ALTER TABLE `user`
 -- Constraints for table `note`
 --
 ALTER TABLE `note`
-  ADD CONSTRAINT `fk_Test_SessionID` FOREIGN KEY (`Test_Session_IDtest_session`) REFERENCES `test_session` (`test_SessionID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_UserID` FOREIGN KEY (`User_IDmed`) REFERENCES `user` (`userID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_Test_SessionID` FOREIGN KEY (`test_session_id`) REFERENCES `test_session` (`test_session_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_UserID` FOREIGN KEY (`med_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `test`
 --
 ALTER TABLE `test`
-  ADD CONSTRAINT `fk_TherapyID` FOREIGN KEY (`Therapy_IDtherapy`) REFERENCES `therapy` (`therapyID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_TherapyID` FOREIGN KEY (`therapy_id`) REFERENCES `therapy` (`therapy_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `test_session`
 --
 ALTER TABLE `test_session`
-  ADD CONSTRAINT `fk_TestID` FOREIGN KEY (`Test_IDtest`) REFERENCES `test` (`testID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_TestID` FOREIGN KEY (`test_id`) REFERENCES `test` (`test_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `therapy`
 --
 ALTER TABLE `therapy`
-  ADD CONSTRAINT `fk_Therapy_ListID` FOREIGN KEY (`TherapyList_IDtherapylist`) REFERENCES `therapy_list` (`therapy_listID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_UserID_Patient` FOREIGN KEY (`User_IDpatient`) REFERENCES `user` (`userID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_UserID_medic` FOREIGN KEY (`User_IDmed`) REFERENCES `user` (`userID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_Therapy_ListID` FOREIGN KEY (`therapylist_id`) REFERENCES `therapy_list` (`therapy_list_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_UserID_Patient` FOREIGN KEY (`patient_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_UserID_medic` FOREIGN KEY (`med_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `therapy_list`
 --
 ALTER TABLE `therapy_list`
-  ADD CONSTRAINT `fk_MedicineID` FOREIGN KEY (`Medicine_IDmedicine`) REFERENCES `medicine` (`medicineID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_MedicineID` FOREIGN KEY (`medicine_id`) REFERENCES `medicine` (`medicine_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Constraints for table `Car`
+-- Constraints for table `user`
 --
 ALTER TABLE `user`
-  ADD CONSTRAINT `fk_User_Organization` FOREIGN KEY (`organization`) REFERENCES `organization` (`OrganizationID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_User_Role` FOREIGN KEY (`Role_IDrole`) REFERENCES `role` (`roleID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_User_Organization` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`organization_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_User_Role` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

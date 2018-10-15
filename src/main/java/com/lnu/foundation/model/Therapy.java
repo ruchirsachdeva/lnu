@@ -15,15 +15,15 @@ public class Therapy {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long therapyID;
+  private Long therapyId;
   @ManyToOne
-  @JoinColumn(name = "user_idpatient")
+  @JoinColumn(name = "patient_id")
   private User patient;
   @ManyToOne
-  @JoinColumn(name = "user_idmed")
+  @JoinColumn(name = "med_id")
   private User med;
   @ManyToOne
-  @JoinColumn(name = "therapylist_idtherapylist")
+  @JoinColumn(name = "therapylist_id")
   private TherapyList therapylist;
 
 }

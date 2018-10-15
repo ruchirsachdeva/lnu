@@ -16,11 +16,11 @@ public class Test {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long testID;
+  private Long testId;
   private Date dateTime;
  // private long therapyIDtherapy;
   @ManyToOne
-  @JoinColumn(name = "therapy_idtherapy")
+  @JoinColumn(name = "therapy_id")
   private Therapy therapy;
 
 }

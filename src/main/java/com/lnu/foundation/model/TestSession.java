@@ -1,9 +1,12 @@
 package com.lnu.foundation.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.lnu.foundation.repository.DataRepository;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,12 +18,17 @@ public class TestSession {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long testSessionID;
+  private Long testSessionId;
   private long testType;
   @OneToOne
-  @JoinColumn(name = "test_idtest")
+  @JoinColumn(name = "test_id")
   private Test test;
-  private String dataURL;
+  private String dataUrl;
+
+  @JsonProperty
+  public List<Data> getData() {
+    return DataRepository.loadData(dataUrl);
+  }
 
 
 }

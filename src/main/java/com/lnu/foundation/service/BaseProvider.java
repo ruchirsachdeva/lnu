@@ -1,5 +1,6 @@
 package com.lnu.foundation.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -12,17 +13,14 @@ import org.springframework.social.linkedin.api.LinkedIn;
 @Scope(value = "request",  proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class BaseProvider {
 
+	@Autowired
 	private Facebook facebook;
+	@Autowired
 	private Google google;
+	@Autowired
 	private LinkedIn linkedIn;
+	@Autowired
 	private ConnectionRepository connectionRepository;
-	
-	public  BaseProvider(Facebook facebook, Google google, LinkedIn linkedIn, ConnectionRepository connectionRepository) {
-		this.facebook = facebook;
-		this.connectionRepository = connectionRepository;
-		this.google=google; 
-		this.linkedIn= linkedIn;
-	}
 
 	public Facebook getFacebook() {
 		return facebook;

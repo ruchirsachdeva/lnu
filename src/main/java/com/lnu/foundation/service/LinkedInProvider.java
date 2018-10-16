@@ -1,5 +1,6 @@
 package com.lnu.foundation.service;
 
+import com.lnu.foundation.model.User;
 import com.lnu.foundation.model.UserBean;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
@@ -10,8 +11,10 @@ import org.springframework.social.linkedin.api.LinkedIn;
 import org.springframework.social.linkedin.api.LinkedInProfileFull;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 
 import java.net.URL;
+import java.util.List;
 
 @Service
 public class LinkedInProvider {
@@ -33,9 +36,14 @@ public class LinkedInProvider {
             return REDIRECT_LOGIN;
         }
         populateUserDetailsFromLinkedIn(userForm);
-        model.addAttribute("loggedInUser", userForm);
-        model.addAttribute("therapies", service.getResearcherTherapies());
+        List<User> researchers = service.getResearcher();
+        if (!CollectionUtils.isEmpty(researchers)) {
+            User physician = researchers.get(0);
+            userForm.setUsername(physician.getUsername());
+            model.addAttribute("therapies", service.getMedTherapies(physician));
+        }
 
+        model.addAttribute("loggedInUser", userForm);
         model.addAttribute("feed", getRSSFeed());
         return "researcher";
     }

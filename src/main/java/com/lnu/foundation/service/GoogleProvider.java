@@ -1,5 +1,6 @@
 package com.lnu.foundation.service;
 
+import com.lnu.foundation.model.User;
 import com.lnu.foundation.model.UserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.ConnectionRepository;
@@ -7,6 +8,9 @@ import org.springframework.social.google.api.Google;
 import org.springframework.social.google.api.plus.Person;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 @Service
 public class GoogleProvider {
@@ -28,8 +32,13 @@ public class GoogleProvider {
         }
 
         populateUserDetailsFromGoogle(userForm);
+        List<User> physicians = service.getPhysician();
+        if (!CollectionUtils.isEmpty(physicians)) {
+            User physician = physicians.get(0);
+            userForm.setUsername(physician.getUsername());
+            model.addAttribute("therapies", service.getMedTherapies(physician));
+        }
         model.addAttribute("loggedInUser", userForm);
-        model.addAttribute("therapies",  service.getPhysicianTherapies());
         return "physician";
     }
 

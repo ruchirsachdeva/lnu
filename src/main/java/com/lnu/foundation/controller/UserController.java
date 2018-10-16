@@ -4,10 +4,11 @@ import com.lnu.foundation.model.TestSession;
 import com.lnu.foundation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**
@@ -20,14 +21,9 @@ public class UserController {
     @Autowired
     UserService service;
 
-    @GetMapping("/tests")
-    public Collection<TestSession> getTestSessions() {
-        Collection<TestSession> sessions = new ArrayList<>();
-        if (service.isPhysician()) {
-            sessions = service.getPhysicianSessions();
-        } else if (service.isResearcher()) {
-            sessions = service.getResearcherSessions();
-        }
+    @GetMapping("/user/{username}/tests")
+    public Collection<TestSession> getTestSessions(@PathVariable String username) {
+        Collection<TestSession> sessions = service.isMedLoggedIn() ? service.getSessions(username) : Collections.emptyList();
         return sessions.stream()
                 .collect(Collectors.toList());
     }

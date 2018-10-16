@@ -36,10 +36,13 @@
             <span th:text="*{firstName}"/> <span th:text="*{lastName}"/>
         </div>
 
-    </form>
 
         <div class="row col-md-7 table-responsive">
-            <table id="therapyTable" class="table table table-bordered table-striped table-condensed table-hover">
+            <div th:if="${therapies.isEmpty()}" th:text="@{'No patients for user' + ${loggedInUser.username}}">No
+                patients for user
+            </div>
+            <table id="therapyTable" class="table table table-bordered table-striped table-condensed table-hover"
+                   th:unless="${therapies.isEmpty()}">
                 <caption>Patient data</caption>
                 <thead>
                 <tr>
@@ -64,19 +67,20 @@
                 </tbody>
             </table>
         </div>
-        <div class="row">
-            <a href="/tests" >See patient tests</a>
+        <div class="row" th:if="${!therapies.isEmpty()}">
+            <a th:href="@{'/user/'+ ${loggedInUser.username}+ '/tests'}"
+               th:text="@{'See patient tests for ' + ${loggedInUser.username}}"></a>
         </div>
 
 
-    <br />
+        <br/>
 
-    <div class="row">
-        <a href="/login" th:href="@{/login}" class="btn btn-info btn-lg">
-            <span class="glyphicon glyphicon-chevron-left"></span> Login using  other social Providers
-        </a>
-    </div>
-
+        <div class="row">
+            <a href="/login" th:href="@{/login}" class="btn btn-info btn-lg">
+                <span class="glyphicon glyphicon-chevron-left"></span> Login using other social Providers
+            </a>
+        </div>
+    </form>
 </div>
 
 </body>

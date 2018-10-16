@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.linkedin.api.LinkedIn;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,35 +38,31 @@ public class UserService {
     @Autowired
     RoleRepository roleRepository;
 
-    @Transactional(readOnly = true)
-    public Collection<TestSession> getPhysicianSessions() {
-        List<User> physician = repository.findByRole(roleRepository.findByName(PHYSICIAN));
-        return testRepository.findByTest_Therapy_Med(physician.get(0));
+    public List<User> getResearcher() {
+        return repository.findByRole(roleRepository.findByName(RESEARCHER));
     }
 
-    @Transactional(readOnly = true)
-    public Collection<TestSession> getResearcherSessions() {
-        List<User> researcher = repository.findByRole(roleRepository.findByName(RESEARCHER));
-        return testRepository.findByTest_Therapy_Med(researcher.get(0));
+    public List<User> getPhysician() {
+        return repository.findByRole(roleRepository.findByName(PHYSICIAN));
     }
 
-    public Collection<Therapy> getPhysicianTherapies() {
-        List<User> physician = repository.findByRole(roleRepository.findByName(PHYSICIAN));
-        return therapyRepository.findByMed(physician.get(0));
+    public Collection<Therapy> getMedTherapies(User med) {
+        return therapyRepository.findByMed(med);
     }
 
-
-    public Collection<Therapy> getResearcherTherapies() {
-        List<User> researcher = repository.findByRole(roleRepository.findByName(RESEARCHER));
-        return therapyRepository.findByMed(researcher.get(0));
+    public boolean isMedLoggedIn() {
+        return isPhysicianLoggedIn() || isResearcherLoggedIn();
     }
 
-
-    public boolean isPhysician() {
+    private boolean isPhysicianLoggedIn() {
         return socialLoginBean.getConnectionRepository().findPrimaryConnection(Google.class) != null;
     }
 
-    public boolean isResearcher() {
+    private boolean isResearcherLoggedIn() {
         return socialLoginBean.getConnectionRepository().findPrimaryConnection(LinkedIn.class) != null;
+    }
+
+    public Collection<TestSession> getSessions(String username) {
+        return testRepository.findByTest_Therapy_Med_Username(username);
     }
 }

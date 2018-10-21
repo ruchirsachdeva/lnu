@@ -192,10 +192,16 @@ CREATE TABLE `user` (
   `user_id` int(11) NOT NULL,
   `username` varchar(45) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `role_id` int(11) NOT NULL,
-  `organization_id` int(11) NOT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  `organization_id` int(11) DEFAULT NULL,
   `lat` float DEFAULT NULL,
-  `long` float DEFAULT NULL
+  `long` float DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `password_confirm` varchar(255) DEFAULT NULL,
+  `provider` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --

@@ -1,6 +1,5 @@
 package com.lnu.foundation.service;
 
-import com.lnu.foundation.model.UserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.facebook.api.Facebook;
@@ -19,22 +18,29 @@ public class FacebookProvider {
     BaseProvider baseProvider;
 
 
-    public String getFacebookUserData(Model model, UserBean userForm) {
+    public String getFacebookUserData(Model model, com.lnu.foundation.model.User userForm) {
 
         ConnectionRepository connectionRepository = baseProvider.getConnectionRepository();
         if (connectionRepository.findPrimaryConnection(Facebook.class) == null) {
             return REDIRECT_LOGIN;
         }
+        //Populate the Bean
         populateUserDetailsFromFacebook(userForm);
+        //Save the details in DB
+        baseProvider.saveUserDetails(userForm);
+        //Login the User
+        baseProvider.autoLoginUser(userForm);
         model.addAttribute("loggedInUser", userForm);
-        return "patient";
+         return "secure/user";
+        //return "patient";
     }
 
-    protected void populateUserDetailsFromFacebook(UserBean userForm) {
+    protected void populateUserDetailsFromFacebook(com.lnu.foundation.model.User userForm) {
         Facebook facebook = baseProvider.getFacebook();
         String[] fields = {"id", "email", "first_name", "last_name", "cover"};
         User user = facebook.fetchObject("me", User.class, fields);
         //	User user = facebook.userOperations().getUserProfile();
+        userForm.setUsername(user.getEmail());
         userForm.setEmail(user.getEmail());
         userForm.setFirstName(user.getFirstName());
         userForm.setLastName(user.getLastName());

@@ -1,6 +1,7 @@
 package com.lnu.foundation;
 
-import com.lnu.foundation.config.RestConfig;
+import com.lnu.foundation.config.WebConfig;
+import com.lnu.foundation.config.SecurityConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
@@ -8,7 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 public class Assignment2Application {
 
 	public static void main(String[] args) {
-		 	new SpringApplicationBuilder(Assignment2Application.class, RestConfig.class).run(args);
+		 	new SpringApplicationBuilder(Assignment2Application.class, WebConfig.class, SecurityConfig.class).run(args);
 	}
 
 }

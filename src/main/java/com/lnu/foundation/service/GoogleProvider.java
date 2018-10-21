@@ -1,7 +1,6 @@
 package com.lnu.foundation.service;
 
 import com.lnu.foundation.model.User;
-import com.lnu.foundation.model.UserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.google.api.Google;
@@ -24,7 +23,7 @@ public class GoogleProvider {
     @Autowired
     UserService service;
 
-    public String getGoogleUserData(Model model, UserBean userForm) {
+    public String getGoogleUserData(Model model, User userForm) {
 
         ConnectionRepository connectionRepository = socialLoginBean.getConnectionRepository();
         if (connectionRepository.findPrimaryConnection(Google.class) == null) {
@@ -32,6 +31,12 @@ public class GoogleProvider {
         }
 
         populateUserDetailsFromGoogle(userForm);
+        //Save the details in DB
+        socialLoginBean.saveUserDetails(userForm);
+
+        //Login the User
+        socialLoginBean.autoLoginUser(userForm);
+
         List<User> physicians = service.getPhysician();
         if (!CollectionUtils.isEmpty(physicians)) {
             User physician = physicians.get(0);
@@ -39,14 +44,16 @@ public class GoogleProvider {
             model.addAttribute("therapies", service.getMedTherapies(physician));
         }
         model.addAttribute("loggedInUser", userForm);
-        return "physician";
+         return "secure/user";
+        //return "physician";
     }
 
 
-    protected void populateUserDetailsFromGoogle(UserBean userform) {
+    protected void populateUserDetailsFromGoogle(User userform) {
         Google google = socialLoginBean.getGoogle();
         Person googleUser = google.plusOperations().getGoogleProfile();
         userform.setEmail(googleUser.getAccountEmail());
+        userform.setUsername(googleUser.getAccountEmail());
         userform.setFirstName(googleUser.getGivenName());
         userform.setLastName(googleUser.getFamilyName());
         userform.setImage(googleUser.getImageUrl());

@@ -1,7 +1,6 @@
 package com.lnu.foundation.service;
 
 import com.lnu.foundation.model.User;
-import com.lnu.foundation.model.UserBean;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
@@ -29,13 +28,19 @@ public class LinkedInProvider {
     @Autowired
     UserService service;
 
-    public String getLinkedInUserData(Model model, UserBean userForm) {
+    public String getLinkedInUserData(Model model, User userForm) {
 
         ConnectionRepository connectionRepository = socialLoginBean.getConnectionRepository();
         if (connectionRepository.findPrimaryConnection(LinkedIn.class) == null) {
             return REDIRECT_LOGIN;
         }
         populateUserDetailsFromLinkedIn(userForm);
+        //Save the details in DB
+        socialLoginBean.saveUserDetails(userForm);
+
+        //Login the User
+        socialLoginBean.autoLoginUser(userForm);
+
         List<User> researchers = service.getResearcher();
         if (!CollectionUtils.isEmpty(researchers)) {
             User physician = researchers.get(0);
@@ -45,7 +50,8 @@ public class LinkedInProvider {
 
         model.addAttribute("loggedInUser", userForm);
         model.addAttribute("feed", getRSSFeed());
-        return "researcher";
+         return "secure/user";
+        //return "researcher";
     }
 
     private SyndFeed getRSSFeed() {
@@ -61,10 +67,11 @@ public class LinkedInProvider {
         return feed;
     }
 
-    private void populateUserDetailsFromLinkedIn(UserBean userForm) {
+    private void populateUserDetailsFromLinkedIn(User userForm) {
         LinkedIn linkedIn = socialLoginBean.getLinkedIn();
         LinkedInProfileFull linkedInUser = linkedIn.profileOperations().getUserProfileFull();
         userForm.setEmail(linkedInUser.getEmailAddress());
+        userForm.setUsername(linkedInUser.getEmailAddress());
         userForm.setFirstName(linkedInUser.getFirstName());
         userForm.setLastName(linkedInUser.getLastName());
         userForm.setImage(linkedInUser.getProfilePictureUrl());

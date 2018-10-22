@@ -29,3 +29,15 @@ databaseChangeLog:
           relativeToChangelogFile: true
           splitStatements: true
           stripComments: true
+
+  - changeSet:
+       id: 3
+       author: lnu
+       changes:
+       - sqlFile:
+           dbms: h2, mysql
+           encoding: utf8
+           path: migrations\userconnection.sql
+           relativeToChangelogFile: true
+           splitStatements: true
+           stripComments: true

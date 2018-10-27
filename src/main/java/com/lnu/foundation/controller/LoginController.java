@@ -64,28 +64,13 @@ public class LoginController {
 
         Connection<Google> googleConnection = socialUserService.getGoogleConnection(params.getToken());
         if (googleConnection != null) {
-            User user = socialUserService.authenticateSocialUser(googleConnection)
-                    .orElseGet(
-                            () -> {
-                                socialUserService.connectSocial(googleConnection);
-                                return socialUserService.authenticateSocialUser(googleConnection).get();
-                            }
-
-                    );
-            if (user == null) {
-                userService.save(user);
-            }
+            return socialUserService.authenticateSocialUser(googleConnection).map(u -> {
+                final String token = tokenHandler.createTokenForUser(u);
+                return new AuthResponse(token);
+            }).orElseThrow(RuntimeException::new);
         }
 
-        // providerSignInUtils.doPostSignUp(user.getUsername(), request);
-        //todo MOVE LOGIN USER LOGIC TO THE RETURN METHOD CALLED FROM AUNGULAR CLIENT. THE CURRENT METHOD IS THE CALLBACK METHOD AFTER SIGNING UP
-        //   Optional<String> token = MyUtil.logInUser(user);
-        //      MyUtil.flash(redirectAttributes, "success", "signupSuccess");
-
-        return securityContextService.currentUser().map(u -> {
-            final String token = tokenHandler.createTokenForUser(u);
-            return new AuthResponse(token);
-        }).orElseThrow(RuntimeException::new); // it does not happen.
+        return null;
     }
 
     @RequestMapping(value = "/linkedin", method = RequestMethod.GET)

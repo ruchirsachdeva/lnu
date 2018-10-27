@@ -8,6 +8,7 @@ import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.EnableSocial;
 import org.springframework.social.config.annotation.SocialConfigurerAdapter;
 import org.springframework.social.connect.ConnectionFactoryLocator;
+import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.social.connect.web.ProviderSignInUtils;
@@ -25,20 +26,23 @@ public class SocialConfig extends SocialConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
+
     //TODO no need of JdbcUsersConnectionRepository, use InMemoryUsersConnectionRepository also check logout behaviour in both i.e how connection is removed ,
     //TODO remove enablessocial and this override method
     @Override
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
-        return new JdbcUsersConnectionRepository(
+        JdbcUsersConnectionRepository repository = new JdbcUsersConnectionRepository(
                 dataSource,
                 connectionFactoryLocator,
                 Encryptors.noOpText() // refer http://stackoverflow.com/questions/12619986/what-is-the-correct-way-to-configure-a-spring-textencryptor-for-use-on-heroku
         );
+        repository.setConnectionSignUp(c -> c.fetchUserProfile().getEmail());
+        return repository;
 
         // Create the table in the database by executing the commands at
         // http://docs.spring.io/spring-social/docs/1.1.0.RELEASE/reference/htmlsingle/#section_jdbcConnectionFactory
         // and then execute
-        // create unique index UserConnectionProviderUser on UserConnection(providerId, providerUserId);
+        // create unique index UserConnectionProviderUser on Userconnection(providerId, providerUserId);
 
     }
 

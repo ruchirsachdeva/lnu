@@ -1,16 +1,9 @@
 package com.lnu.foundation.service;
 
-import com.lnu.foundation.model.SignupForm;
-import com.lnu.foundation.model.TestSession;
-import com.lnu.foundation.model.Therapy;
-import com.lnu.foundation.model.User;
-import com.lnu.foundation.repository.RoleRepository;
-import com.lnu.foundation.repository.TestSessionRepository;
-import com.lnu.foundation.repository.TherapyRepository;
-import com.lnu.foundation.repository.UserRepository;
+import com.lnu.foundation.model.*;
+import com.lnu.foundation.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,8 +17,12 @@ import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by rucsac on 15/10/2018.
@@ -52,6 +49,9 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserconnectionRepository userconnectionRepository;
 
     public List<User> getResearcher() {
         return repository.findByRole(roleRepository.findByName(RESEARCHER));
@@ -88,7 +88,7 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
         user.setEmail(signupForm.getEmail());
         user.setUsername(signupForm.getEmail());
         user.setFirstName(signupForm.getName());
-        if(signupForm.getPassword()!=null) {
+        if (signupForm.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(signupForm.getPassword()));
         }
         user.setProvider(signupForm.getProvider());
@@ -104,6 +104,7 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
     }
 
 
+    // Will be called after form based authentication to fetch user details
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -116,13 +117,18 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
 
     }
 
-
+    // Will be called after social authentication to fetch user details
     @Override
     public SocialUserDetails loadUserByUserId(String userId)
             throws UsernameNotFoundException, DataAccessException {
-        final Optional<User> user = repository.findByUsername(userId);
-        final AccountStatusUserDetailsChecker detailsChecker = new AccountStatusUserDetailsChecker();
-        user.ifPresent(detailsChecker::check);
-        return user.orElseThrow(() -> new UsernameNotFoundException("user not found."));
+        Userconnection userconnection = userconnectionRepository.findOne(userId);
+
+        if (userconnection !=null && "google".equals(userconnection.getProviderId())) {
+            List<User> physicians = getPhysician();
+            if (!CollectionUtils.isEmpty(physicians)) {
+                return physicians.get(0);
+            }
+        }
+        return getPhysician().get(0);
     }
 }

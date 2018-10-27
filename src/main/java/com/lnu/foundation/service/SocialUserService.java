@@ -15,7 +15,6 @@ import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.security.SocialAuthenticationProvider;
 import org.springframework.social.security.SocialAuthenticationToken;
-import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class SocialUserService {
     @Autowired
     private UsersConnectionRepository usersConnectionRepository;
     @Autowired
-    private SocialUserDetailsService socialUserDetailsService;
+    private UserService socialUserDetailsService;
     @Autowired
     private SecurityContextService securityContextService;
 

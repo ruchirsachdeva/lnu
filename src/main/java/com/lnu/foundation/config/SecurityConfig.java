@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/css/**", "/connect/**").permitAll()
                 .antMatchers("/secure/**", "/users")
                 .authenticated()
+                .antMatchers("/api/users/user/**/tests").hasAnyRole("PHYSICIAN", "RESEARCHER", "JUNIOR_RESEARCHER")
                 .and()
                 .logout()
                 .permitAll()
@@ -47,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(statelessAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
+
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

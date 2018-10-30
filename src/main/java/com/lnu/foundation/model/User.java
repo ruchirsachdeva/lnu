@@ -44,11 +44,14 @@ public class User implements SocialUserDetails {
     private String image;
 
 
-
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(() -> "ROLE_USER");
+        return Collections.singleton(() -> getRole() != null ? addRolePrefixWithUnderscore() : "ROLE_USER");
+    }
+
+    private String addRolePrefixWithUnderscore() {
+        return "ROLE_" + getRole().getName().replaceAll(" ", "_").toUpperCase();
     }
 
     @Override

@@ -4,8 +4,6 @@ import com.lnu.foundation.model.*;
 import com.lnu.foundation.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,9 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by rucsac on 15/10/2018.
@@ -62,7 +58,7 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
     }
 
     public Collection<Therapy> getMedTherapies(User med) {
-        return therapyRepository.findByMed(med);
+        return therapyRepository.findByMed_Username(med.getEmail());
     }
 
     public boolean isMedLoggedIn() {
@@ -79,6 +75,15 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
 
     public Collection<TestSession> getSessions(String username) {
         return testRepository.findByTest_Therapy_Med_Username(username);
+    }
+
+
+    public List<Therapy> getTherapiesByPatient(String username) {
+        return therapyRepository.findByPatient_Username(username);
+    }
+
+    public List<Therapy> getTherapiesByMed(String username) {
+        return therapyRepository.findByMed_Username(username);
     }
 
 
@@ -110,9 +115,10 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         com.lnu.foundation.model.User user = repository.findByUsername(email).orElseThrow(() -> new UsernameNotFoundException("No user found with email: " + email));
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("LOGGED_USER"));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
+//        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+//        grantedAuthorities.add(new SimpleGrantedAuthority("LOGGED_USER"));
+        //new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities)
+        return user;
 
 
     }
@@ -123,7 +129,7 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
             throws UsernameNotFoundException, DataAccessException {
         Userconnection userconnection = userconnectionRepository.findOne(userId);
 
-        if (userconnection !=null && "google".equals(userconnection.getProviderId())) {
+        if (userconnection != null && "google".equals(userconnection.getProviderId())) {
             List<User> physicians = getPhysician();
             if (!CollectionUtils.isEmpty(physicians)) {
                 return physicians.get(0);

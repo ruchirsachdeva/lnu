@@ -2,6 +2,8 @@ package com.lnu.foundation.controller;
 
 import com.lnu.foundation.auth.TokenHandler;
 import com.lnu.foundation.model.TestSession;
+import com.lnu.foundation.model.Therapy;
+import com.lnu.foundation.model.User;
 import com.lnu.foundation.service.SecurityContextService;
 import com.lnu.foundation.service.SocialUserService;
 import com.lnu.foundation.service.UserParamsValidator;
@@ -12,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**
@@ -44,11 +45,35 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @GetMapping("/user/{username}/tests")
-    public Collection<TestSession> getTestSessions(@PathVariable String username) {
-        Collection<TestSession> sessions = service.isMedLoggedIn() ? service.getSessions(username) : Collections.emptyList();
+    @GetMapping("/me/tests")
+    public Collection<TestSession> getTestSessions() {
+        User user = securityContextService.currentUser().orElseThrow(RuntimeException::new);
+        Collection<TestSession> sessions = service.getSessions(user.getUsername());
         return sessions.stream()
                 .collect(Collectors.toList());
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/me")
+    public User getMe() {
+        return securityContextService.currentUser().orElseThrow(RuntimeException::new);
+    }
+
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/therapies")
+    public Collection<Therapy> getTherapies() {
+        Collection<Therapy> therapies = null;
+        User user = securityContextService.currentUser().orElseThrow(RuntimeException::new);
+        if ("physician".equals(user.getRole().getName())
+                || "researcher".equals(user.getRole().getName())
+                || "junior researcher".equals(user.getRole().getName())) {
+            therapies = service.getTherapiesByMed(user.getUsername());
+        } else {
+            therapies = service.getTherapiesByPatient(user.getUsername());
+        }
+
+        return therapies;
     }
 
 }

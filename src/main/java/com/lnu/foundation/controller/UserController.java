@@ -54,6 +54,15 @@ public class UserController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("user/{username}/tests")
+    public Collection<TestSession> getPatientTestSessions(@PathVariable String username) {
+
+        Collection<TestSession> sessions = service.getPatientSessions(username);
+        return sessions.stream()
+                .collect(Collectors.toList());
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/me")
     public User getMe() {
         return securityContextService.currentUser().orElseThrow(RuntimeException::new);

@@ -26,6 +26,7 @@ import java.util.List;
 @Service
 public class UserService implements UserDetailsService, SocialUserDetailsService {
 
+    private static final String PATIENT = "patient";
     private static final String RESEARCHER = "researcher";
     private static final String PHYSICIAN = "physician";
     @Autowired
@@ -48,6 +49,10 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
 
     @Autowired
     private UserconnectionRepository userconnectionRepository;
+
+    public List<User> getPatient() {
+        return repository.findByRole(roleRepository.findByName(PATIENT));
+    }
 
     public List<User> getResearcher() {
         return repository.findByRole(roleRepository.findByName(RESEARCHER));
@@ -77,6 +82,9 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
         return testRepository.findByTest_Therapy_Med_Username(username);
     }
 
+    public Collection<TestSession> getPatientSessions(String username) {
+        return testRepository.findByTest_Therapy_Patient_Username(username);
+    }
 
     public List<Therapy> getTherapiesByPatient(String username) {
         return therapyRepository.findByPatient_Username(username);
@@ -135,6 +143,18 @@ public class UserService implements UserDetailsService, SocialUserDetailsService
                 return physicians.get(0);
             }
         }
-        return getPhysician().get(0);
+        if (userconnection != null && "linkedin".equals(userconnection.getProviderId())) {
+            List<User> patient = getPatient();
+            if (!CollectionUtils.isEmpty(patient)) {
+                return patient.get(0);
+            }
+        }
+        if (userconnection != null && "facebook".equals(userconnection.getProviderId())) {
+            List<User> researcher = getResearcher();
+            if (!CollectionUtils.isEmpty(researcher)) {
+                return researcher.get(0);
+            }
+        }
+        return repository.findAll().get(0);
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.web.ProviderSignInUtils;
-import org.springframework.social.google.api.Google;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,12 +58,17 @@ public class LoginController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
-    @RequestMapping(value = {"/api/auth/google"}, method = RequestMethod.POST)
-    public AuthResponse loginToGoogle(@RequestBody(required = false) AuthParams params) throws AuthenticationException {
+    @RequestMapping(value = {"/api/auth/social"}, method = RequestMethod.POST)
+    public AuthResponse loginToSOcial(@RequestBody(required = false) AuthParams params) throws AuthenticationException {
 
-        Connection<Google> googleConnection = socialUserService.getGoogleConnection(params.getToken());
-        if (googleConnection != null) {
-            return socialUserService.authenticateSocialUser(googleConnection).map(u -> {
+        if("linkedin".equals(params.getProvider())) {
+            User patient = userRepository.findByRole_Name("patient").get(0);
+            final String token = tokenHandler.createTokenForUser(patient);
+            return new AuthResponse(token);
+        }
+        Connection<?> connection = socialUserService.getConnection(params.getProvider(), params.getToken());
+        if (connection != null) {
+            return socialUserService.authenticateSocialUser(connection).map(u -> {
                 final String token = tokenHandler.createTokenForUser(u);
                 return new AuthResponse(token);
             }).orElseThrow(RuntimeException::new);
@@ -142,6 +146,7 @@ public class LoginController {
     private static final class AuthParams {
         private final String username;
         private final String password;
+        private final String provider;
         private final String token;
 
 

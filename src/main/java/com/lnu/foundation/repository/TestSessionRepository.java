@@ -16,4 +16,6 @@ public interface TestSessionRepository extends JpaRepository<TestSession, Long> 
     Collection<TestSession> findByTest_Therapy_Med(User med);
 
     Collection<TestSession> findByTest_Therapy_Med_Username(String username);
+
+    Collection<TestSession> findByTest_Therapy_Patient_Username(String username);
 }

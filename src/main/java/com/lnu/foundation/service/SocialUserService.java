@@ -10,6 +10,7 @@ import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.UsersConnectionRepository;
+import org.springframework.social.connect.support.OAuth2ConnectionFactory;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
@@ -37,6 +38,26 @@ public class SocialUserService {
 
     private static final Logger logger = LoggerFactory.getLogger(SocialUserService.class);
 
+    public Connection<?> getConnection(String provider,String accessToken) {
+        OAuth2ConnectionFactory connectionFactory = (OAuth2ConnectionFactory) connectionFactoryLocator.getConnectionFactory(provider);
+        return connectionFactory.createConnection(new AccessGrant(accessToken));
+    }
+
+
+    public Optional<User> authenticateSocialUser(Connection<?> connection) {
+        SocialAuthenticationToken socialAuthenticationToken = new SocialAuthenticationToken(connection, null);
+        Authentication authentication;
+        try {
+            authentication = new SocialAuthenticationProvider(usersConnectionRepository, socialUserDetailsService).authenticate(socialAuthenticationToken);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserProfile userProfile = connection.fetchUserProfile();
+        logger.debug("User {} {} authenticated.", userProfile.getFirstName(), userProfile.getLastName());
+        return securityContextService.currentUser();
+    }
+
 
     public Connection<Google> getGoogleConnection(String accessToken) {
         GoogleConnectionFactory connectionFactory = (GoogleConnectionFactory) connectionFactoryLocator.getConnectionFactory("google");
@@ -53,20 +74,6 @@ public class SocialUserService {
         UserProfile userProfile = connection.fetchUserProfile();
         usersConnectionRepository.createConnectionRepository(userProfile.getEmail()).removeConnection(connection.getKey());
         logger.debug("User {} {} connection deleted.", userProfile.getFirstName(), userProfile.getLastName());
-    }
-
-    public Optional<User> authenticateSocialUser(Connection<?> connection) {
-        SocialAuthenticationToken socialAuthenticationToken = new SocialAuthenticationToken(connection, null);
-        Authentication authentication;
-        try {
-            authentication = new SocialAuthenticationProvider(usersConnectionRepository, socialUserDetailsService).authenticate(socialAuthenticationToken);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserProfile userProfile = connection.fetchUserProfile();
-        logger.debug("User {} {} authenticated.", userProfile.getFirstName(), userProfile.getLastName());
-        return securityContextService.currentUser();
     }
 
     public Optional<User> authenticateSocialUser(String accessToken) {
